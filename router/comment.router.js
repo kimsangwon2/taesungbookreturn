@@ -11,6 +11,7 @@ const router = express.Router();
 //         - 프론트엔드에서 댓글 작성, 수정 및 삭제를 할 때마다 조회 API를 다시 호출하여 자연스럽게 최신의 댓글 목록을 화면에 보여줄 수 있도록 해야 합니다!
 
 //댓글  작성 API
+
 router.post("/comment", authMiddleware, async (req, res, next) => {
   const { content } = req.body;
   const { userId } = req.user;
@@ -31,8 +32,9 @@ router.post("/comment", authMiddleware, async (req, res, next) => {
   return res.status(201).json({ message: "댓글 작성에 성공하였습니다." });
 });
 
-//댓글 조회 API
-router.get("/comment", async (req, res, next) => {
+//댓글 조회 API(단건)
+
+router.get("/comment/:commentId", async (req, res, next) => {
   const { content, createdAt } = req.body;
   const { commentId, postId } = req.params;
   const findcomment = await prisma.comments.findMany({
@@ -50,7 +52,28 @@ router.get("/comment", async (req, res, next) => {
   return res.status(200).json({ data: findcomment });
 });
 
+//댓글 조회API(여러건)
+
+router.get("/comment", async (req, res, next) => {
+  const { content, createdAt } = req.body;
+  const { commentId, postId } = req.params;
+  const findcomment = await prisma.comments.findFirst({
+    // where: { commentId: +commentId },
+    select: {
+      postId: true,
+      commentId: true,
+      content: true,
+      createdAt: true,
+    },
+  });
+  if (!commentId) {
+    return res.status(404).json({ message: "댓글이 없습니다." });
+  }
+  return res.status(200).json({ data: findcomment });
+});
+
 //댓글 수정 API
+
 router.put("/comment", authMiddleware, async (req, res, next) => {
   const { content } = req.body;
   const { userId } = req.user;
@@ -74,6 +97,7 @@ router.put("/comment", authMiddleware, async (req, res, next) => {
 });
 
 //댓글 삭제 API
+
 router.delete("/comment", authMiddleware, async (req, res, next) => {
   const { content } = req.body;
   const { userId } = req.user;
