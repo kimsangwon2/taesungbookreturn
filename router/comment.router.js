@@ -1,6 +1,6 @@
 import express from "express";
 import { prisma } from "../index.js";
-
+import authMiddleware from "../middlewares/auth.middlewares.js";
 const router = express.Router();
 
 // - [ ]  **댓글 CRUD 기능**
@@ -10,18 +10,18 @@ const router = express.Router();
 //     - 댓글 작성, 수정, 삭제 시 새로고침 기능
 //         - 프론트엔드에서 댓글 작성, 수정 및 삭제를 할 때마다 조회 API를 다시 호출하여 자연스럽게 최신의 댓글 목록을 화면에 보여줄 수 있도록 해야 합니다!
 
-//댓글  생성 API
-router.post("/comment", async (req, res, next) => {
+//댓글  작성 API
+router.post("/comment", authMiddleware, async (req, res, next) => {
   const { content } = req.body;
   const { userId } = req.user;
   const { postId } = req.post;
-  const findpost = await prisma.commnet.findFirst({
+  const findpost = await prisma.commnets.findFirst({
     where: { postId: +postId },
   });
   if (!postId) {
     return res.status(404).json({ message: "게시글이 없습니다." });
   }
-  const comment = await prisma.comment.create({
+  const comment = await prisma.comments.create({
     where: { userId: +userId, postId: +postId },
     data: {
       userId: user.userId,
@@ -34,16 +34,15 @@ router.post("/comment", async (req, res, next) => {
 
 //댓글 조회 API
 router.get("/comment", async (req, res, next) => {
-  const { content } = req.body;
-  const { commentId } = req.params;
-  const { postId } = req.post;
-  const findcomment = await prisma.comment.findMany({
-    where: { commentId: +commentId },
+  const { content, createdAt } = req.body;
+  const { commentId, postId } = req.params;
+  const findcomment = await prisma.comments.findMany({
+    // where: { commentId: +commentId },
     select: {
-      postId: postId,
-      commentId: commentId,
-      content,
-      createdAt,
+      postId: true,
+      commentId: true,
+      content: true,
+      createdAt: true,
     },
   });
   if (!commentId) {
@@ -53,9 +52,43 @@ router.get("/comment", async (req, res, next) => {
 });
 
 //댓글 수정 API
-router.put("/comment", async (req, res, next) => {});
+router.put("/comment", authMiddleware, async (req, res, next) => {
+  const { content } = req.body;
+  const { userId } = req.user;
+  const { commentId } = req.params;
+  const findcomment = await prisma.comments.findFirst({
+    where: { commentId: +commentId },
+  });
+  if (!commentId) {
+    return res.status(404).json({ message: "댓글이 없습니다." });
+  }
+  const putcomment = await prisma.comments.update({
+    where: { userId: +userId, commentId: +commentId },
+    data: {
+      userId: userId,
+      commentId: commentId,
+      content,
+      updatedAt,
+    },
+  });
+  return res.status(201).json({ message: "댓글 수정에 성공하였습니다." });
+});
 
 //댓글 삭제 API
-router.delete("/comment", async (req, res, next) => {});
+router.delete("/comment", authMiddleware, async (req, res, next) => {
+  const { content } = req.body;
+  const { userId } = req.user;
+  const { commentId } = req.params;
+  const findcomment = await prisma.comments.findFirst({
+    where: { commentId: +commentId },
+  });
+  if (!commentId) {
+    return res.status(404).json({ message: "댓글이 없습니다." });
+  }
+  const delcomment = await prisma.comments.delete({
+    where: { userId: +userId, commentId: +commentId },
+  });
+  return res.status(201).json({ message: "댓글 삭제에 성공하였습니다." });
+});
 
 export default router;
