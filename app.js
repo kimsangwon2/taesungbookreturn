@@ -7,7 +7,7 @@ import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import LogMiddleware from "./middlewares/log.middleware.js";
 import ErrorHandlingMiddleware from "./middlewares/error-handling.middleware.js";
-import UserRouter from "./router/user.router.js";
+import UserRouter from "./router/users.router.js";
 
 const swaggerOptions = {
   swaggerDefinition: {
