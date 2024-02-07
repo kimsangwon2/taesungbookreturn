@@ -28,28 +28,19 @@ model Users {
   friendships2 Friendship[] @relation("Friendship2")
   @@map("Users")
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 4f8c90f3822acaee0eeb4ceba81aedea880cf537
 enum emailStatus{
   nono
   yes
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 4f8c90f3822acaee0eeb4ceba81aedea880cf537
 enum Permission {
   User
   Admin
 }
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 4f8c90f3822acaee0eeb4ceba81aedea880cf537
 model Posts {
   postId    Int      @id @default(autoincrement()) @map("postId")
   userId Int @map("userId")
