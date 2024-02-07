@@ -157,6 +157,82 @@ router.post("/sign-up/token", async (req, res, next) => {
 	}
 });
 
+router.post("/sign-in", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await prisma.users.findFirst({ where: { email } });
+
+  if (!user)
+    return res.status(401).json({ message: "존재하지 않는 이메일입니다." });
+  else if (!(await bcrypt.compare(password, user.password)))
+    return res.status(401).json({ message: "비밀번호가 일치하지 않습니다." });
+
+  const userJWT = jwt.sign(
+    {
+      userId: user.userId,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "12h" }
+  );
+  const refreshToken = jwt.sign(
+    { userId: user.userId },
+    process.env.REFRESH_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.cookie("authorization", `Bearer ${userJWT}`);
+  res.cookie("refreshToken", refreshToken);
+  return res.status(200).json({ message: "로그인 성공" });
+});
+
+router.get("/sign-out", (req, res) => {
+  res.clearCookie("authorization");
+  res.clearCookie("refreshtoken");
+  return res.status(200).json({ message: "로그아웃 성공" });
+});
+
+router.post("/refresh", async (req, res, next) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "리프레쉬 토큰이 없습니다." });
+  }
+
+  try {
+    const { userId } = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+
+    const newToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET, {
+      expiresIn: "12h",
+    });
+
+    res.cookie("authorization", `Bearer ${newToken}`);
+
+    return res
+      .status(200)
+      .json({ message: "새로운 토큰 재발급에 성공했습니다." });
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ message: "리프레시 토큰이 유효하지 않습니다." });
+  }
+});
+
+router.get("/users", authMiddleware, async (req, res, next) => {
+  const { userId } = req.user;
+
+  const user = await prisma.users.findFirst({
+    where: { userId: +userId },
+    select: {
+      userId: true,
+      email: true,
+      createdAt: true,
+      updatedAt: true,
+      permission: true,
+    },
+  });
+
+  return res.status(200).json({ data: user });
+});
+
 router.get("/oauth", (req, res) => {
 	const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_ID}&redirect_uri=${process.env.KAKAO_REDIRECT_URI}&response_type=code`;
 	res.redirect(kakaoAuthUrl);
@@ -287,6 +363,9 @@ router.put("user/:userId", authMiddleware, async (req, res) => {
 	});
 
 	return res.status(201).json({ message: "프로필 수정이 완료되었습니다." });
+});
+router.get("/oauth/logout/callback", (req, res) => {
+  return res.status(200).json({ message: "로그아웃 성공" });
 });
 
 export default router;
