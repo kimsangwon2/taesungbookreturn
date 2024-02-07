@@ -13,20 +13,19 @@ const router = express.Router();
 //댓글  작성 API
 router.post("/comment", authMiddleware, async (req, res, next) => {
   const { content } = req.body;
-  const user = req.user;
+  const { userId } = req.user;
   //   const { postId } = req.params;
-  const findpost = await prisma.comments.findFirst({
-    // where: { postId: +postId },
-  });
+  //   const findpost = await prisma.comments.findFirst({
+  //     // where: { postId: +postId },
+  //   });
   //   if (!postId) {
   //     return res.status(404).json({ message: "게시글이 없습니다." });
   //   }
   const comment = await prisma.comments.create({
     data: {
       //   postId: postId,
-      userId: user.userId,
+      userId: +userId,
       content: content,
-      permission: user.permission,
     },
   });
   return res.status(201).json({ message: "댓글 작성에 성공하였습니다." });
