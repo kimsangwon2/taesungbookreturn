@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+model Users {
+  userId    Int      @id @default(autoincrement()) @map("userId")
+  email     String   @unique @map("email")
+  password  String   @map("password")
+  name         String   @map("name")
+  age          Int?     @map("age")
+  createdAt    DateTime @default(now()) @map("createdAt")
+  updatedAt    DateTime @updatedAt @map("updatedAt")
+  posts Posts[]
+  comments Comments[]
+  likes Likes[]
+  friendships1 Friendship[] @relation("Friendship1")
+  friendships2 Friendship[] @relation("Friendship2")
+  @@map("Users")
+}
+model Posts {
+  postId    Int      @id @default(autoincrement()) @map("postId")
+  userId Int @map("userId")
+  title     String   @map("title")
+  content   String   @map("content") @db.Text
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  comments Comments[]
+  likes Likes[]
+  @@map("Posts")
+}
+
+model Comments {
+  commentId Int      @id @default(autoincrement()) @map("commentId")
+  userId Int @map("userId")
+  postId    Int     @map("postId")
+  content   String   @map("content")
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  post Posts @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  @@map("Comments")
+}
+model Likes {
+  likesId   Int      @id @default(autoincrement()) @map("likesId")
+  userId Int  @map("userId")
+  postId    Int     @map("postId")
+  createdAt    DateTime @default(now()) @map("createdAt")
+  updatedAt    DateTime @updatedAt @map("updatedAt")
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  post Posts @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  @@map("Likes")
+}
+model Friendship {
+  friendshipId Int @id @default(autoincrement()) @map("friendshipId")
+  user1Id Int  @map("user1Id")
+  user2Id Int  @map("user2Id")
+  status String @map("status")
+  createdAt    DateTime @default(now()) @map("createdAt")
+  updatedAt    DateTime @updatedAt @map("updatedAt")
+  user1 Users @relation("Friendship1", fields: [user1Id], references: [userId])
+  user2 Users @relation("Friendship2", fields: [user2Id], references: [userId])
+  @@map("Friendship")
+}
