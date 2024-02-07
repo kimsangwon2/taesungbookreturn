@@ -3,11 +3,11 @@ import cookieParser from "cookie-parser";
 import CommentRouter from "./router/comment.router.js";
 import LikeRouter from "./router/like.router.js";
 import PostRouter from "./router/post.router.js";
-import UserRouter from "./router/user.router.js";
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import LogMiddleware from "./middlewares/log.middleware.js";
 import ErrorHandlingMiddleware from "./middlewares/error-handling.middleware.js";
+import UserRouter from "./router/user.router.js";
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -33,7 +33,7 @@ const PORT = 3020;
 app.use(LogMiddleware);
 app.use(express.json());
 app.use(cookieParser());
-app.use("/", [CommentRouter, LikeRouter, PostRouter, UserRouter]);
+app.use("/api", [CommentRouter, LikeRouter, PostRouter, UserRouter]);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(ErrorHandlingMiddleware);
