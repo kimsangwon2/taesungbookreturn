@@ -58,4 +58,4 @@ router.put("/comment", async (req, res, next) => {});
 //댓글 삭제 API
 router.delete("/comment", async (req, res, next) => {});
 
-export default express;
+export default router;
