@@ -17,6 +17,10 @@ model Users {
   age          Int?     @map("age")
   createdAt    DateTime @default(now()) @map("createdAt")
   updatedAt    DateTime @updatedAt @map("updatedAt")
+  permission Permission @default(User) @map("permission")
+  emailstatus emailStatus @map("emailstatus")
+  emailVerified Boolean  @default(false) @map("emailVerified")
+  verificationToken String? @map("verificationToken")
   posts Posts[]
   comments Comments[]
   likes Likes[]
@@ -24,17 +28,28 @@ model Users {
   friendships2 Friendship[] @relation("Friendship2")
   @@map("Users")
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4f8c90f3822acaee0eeb4ceba81aedea880cf537
 enum emailStatus{
   nono
   yes
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4f8c90f3822acaee0eeb4ceba81aedea880cf537
 enum Permission {
   User
   Admin
 }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4f8c90f3822acaee0eeb4ceba81aedea880cf537
 model Posts {
   postId    Int      @id @default(autoincrement()) @map("postId")
   userId Int @map("userId")
