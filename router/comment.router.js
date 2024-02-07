@@ -13,23 +13,23 @@ const router = express.Router();
 //댓글  작성 API
 router.post("/comment", authMiddleware, async (req, res, next) => {
   const { content } = req.body;
-  const { userId } = req.user;
-  const { postId } = req.post;
-  const findpost = await prisma.commnets.findFirst({
-    where: { postId: +postId },
+  const user = req.user;
+  //   const { postId } = req.params;
+  const findpost = await prisma.comments.findFirst({
+    // where: { postId: +postId },
   });
-  if (!postId) {
-    return res.status(404).json({ message: "게시글이 없습니다." });
-  }
+  //   if (!postId) {
+  //     return res.status(404).json({ message: "게시글이 없습니다." });
+  //   }
   const comment = await prisma.comments.create({
-    where: { userId: +userId, postId: +postId },
     data: {
+      //   postId: postId,
       userId: user.userId,
-      postId: post.postId,
       content: content,
+      permission: user.permission,
     },
   });
-  return res.status(200).json({ message: "댓글 작성에 성공하였습니다." });
+  return res.status(201).json({ message: "댓글 작성에 성공하였습니다." });
 });
 
 //댓글 조회 API
@@ -48,7 +48,7 @@ router.get("/comment", async (req, res, next) => {
   if (!commentId) {
     return res.status(404).json({ message: "댓글이 없습니다." });
   }
-  return res.status(201).json({ data: findcomment });
+  return res.status(200).json({ data: findcomment });
 });
 
 //댓글 수정 API
@@ -71,7 +71,7 @@ router.put("/comment", authMiddleware, async (req, res, next) => {
       updatedAt,
     },
   });
-  return res.status(201).json({ message: "댓글 수정에 성공하였습니다." });
+  return res.status(200).json({ message: "댓글 수정에 성공하였습니다." });
 });
 
 //댓글 삭제 API
@@ -88,7 +88,7 @@ router.delete("/comment", authMiddleware, async (req, res, next) => {
   const delcomment = await prisma.comments.delete({
     where: { userId: +userId, commentId: +commentId },
   });
-  return res.status(201).json({ message: "댓글 삭제에 성공하였습니다." });
+  return res.status(200).json({ message: "댓글 삭제에 성공하였습니다." });
 });
 
 export default router;
