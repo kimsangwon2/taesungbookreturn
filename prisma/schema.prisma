@@ -1,10 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -22,6 +20,7 @@ model Users {
   emailstatus emailStatus @map("emailstatus")
   emailVerified Boolean  @default(false) @map("emailVerified")
   verificationToken String? @map("verificationToken")
+  profileUrl String? @map("profileUrl")
   posts Posts[]
   comments Comments[]
   likes Likes[]
@@ -29,24 +28,20 @@ model Users {
   friendships2 Friendship[] @relation("Friendship2")
   @@map("Users")
 }
-
 enum emailStatus{
   nono
   yes
 }
-
 enum Permission {
   User
   Admin
 }
-
-
-
 model Posts {
   postId    Int      @id @default(autoincrement()) @map("postId")
   userId Int @map("userId")
   title     String   @map("title")
   content   String   @map("content") @db.Text
+  profileUrl String? @map("profileUrl")
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
@@ -54,7 +49,6 @@ model Posts {
   likes Likes[]
   @@map("Posts")
 }
-
 model Comments {
   commentId Int      @id @default(autoincrement()) @map("commentId")
   userId Int @map("userId")
@@ -64,16 +58,18 @@ model Comments {
   updatedAt DateTime @updatedAt @map("updatedAt")
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
   post Posts @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  likes Likes[]
   @@map("Comments")
 }
 model Likes {
   likesId   Int      @id @default(autoincrement()) @map("likesId")
-  userId Int  @map("userId")
-  postId    Int     @map("postId")
+  userId    Int
+  postId    Int?
+  commentId Int?
   createdAt    DateTime @default(now()) @map("createdAt")
-  updatedAt    DateTime @updatedAt @map("updatedAt")
-  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  post Posts @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  user Users @relation(fields: [userId], references: [userId])
+  post Posts? @relation(fields: [postId], references: [postId])
+  comment Comments? @relation(fields: [commentId], references: [commentId])
   @@map("Likes")
 }
 model Friendship {
@@ -87,8 +83,8 @@ model Friendship {
   user2 Users @relation("Friendship2", fields: [user2Id], references: [userId])
   @@map("Friendship")
 }
-
 enum status {
   nofriend
   friend
 }
+
