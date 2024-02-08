@@ -210,6 +210,84 @@ router.post("/refresh", async (req, res, next) => {
   }
 });
 
+router.put("user/:userId", authMiddleware, async (req, res) => {
+  const user = req.user;
+  const { userId } = req.params;
+  const { email, password, name, age } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      message: "유저 아이디는 필수값입니다.",
+    });
+  }
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "이메일은 필수값입니다.",
+    });
+  }
+
+  if (!password) {
+    return res.status(400).json({
+      success: false,
+      message: "비밀번호 필수값입니다.",
+    });
+  }
+
+  if (!name) {
+    return res.status(400).json({
+      success: false,
+      message: "이름은 필수값입니다.",
+    });
+  }
+
+  if (!age) {
+    return res.status(400).json({
+      success: false,
+      message: "나이는 필수값입니다.",
+    });
+  }
+
+  const profile = await prisma.users.findFirst({
+    where: {
+      userId: +userId,
+    },
+  });
+
+  if (!profile) {
+    return res.status(400).json({
+      success: false,
+      message: "존재하지 않는 유저 정보입니다",
+    });
+  }
+
+  if (profile.userId !== user.userId) {
+    return res.status(400).json({
+      success: false,
+      message: "올바르지 않은 요청입니다.",
+    });
+  }
+
+  await prisma.users.update({
+    where: {
+      userId: +userId,
+    },
+    data: {
+      email,
+      password,
+      name,
+      age,
+    },
+  });
+
+  return res.status(201).json({ message: "프로필 수정이 완료되었습니다." });
+});
+router.get("/oauth/logout/callback", (req, res) => {
+  return res.status(200).json({ message: "로그아웃 성공" });
+});
+
 router.get("/users", authMiddleware, async (req, res, next) => {
   const { userId } = req.user;
 
