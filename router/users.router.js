@@ -210,22 +210,15 @@ router.post("/refresh", async (req, res, next) => {
   }
 });
 
-router.put("user/:userId", authMiddleware, async (req, res) => {
+router.put("/users/:userId", authMiddleware, async (req, res) => {
   const user = req.user;
   const { userId } = req.params;
-  const { email, password, name, age } = req.body;
+  const { password, name, age } = req.body;
 
   if (!userId) {
     return res.status(400).json({
       success: false,
-      message: "유저 아이디는 필수값입니다.",
-    });
-  }
-
-  if (!email) {
-    return res.status(400).json({
-      success: false,
-      message: "이메일은 필수값입니다.",
+      message: "수정이 불가능한 유저입니다.",
     });
   }
 
@@ -275,7 +268,6 @@ router.put("user/:userId", authMiddleware, async (req, res) => {
       userId: +userId,
     },
     data: {
-      email,
       password,
       name,
       age,
@@ -284,6 +276,7 @@ router.put("user/:userId", authMiddleware, async (req, res) => {
 
   return res.status(201).json({ message: "프로필 수정이 완료되었습니다." });
 });
+
 router.get("/oauth/logout/callback", (req, res) => {
   return res.status(200).json({ message: "로그아웃 성공" });
 });
