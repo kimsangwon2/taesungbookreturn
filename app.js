@@ -37,6 +37,7 @@ app.use("/api", [CommentRouter, LikeRouter, PostRouter, UserRouter]);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(ErrorHandlingMiddleware);
+
 app.listen(PORT, () => {
   console.log(PORT, "포트로 서버가 열렸어요!");
 });
