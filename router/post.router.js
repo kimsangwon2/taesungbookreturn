@@ -1,23 +1,24 @@
 import express from "express";
 import { prisma } from "../index.js";
 import authMiddleware from "../middlewares/auth.middlewares.js";
+import { upload } from "../middlewares/upload.js";
 
 const router = express.Router();
 
 //모든 게시글 조회 api (여러건)
-router.get("/post", async (req, res) => {
-  const post = await prisma.posts.findMany({
-    include: {
-      user: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
+// router.get("/post", async (req, res) => {
+//   const post = await prisma.posts.findMany({
+//     include: {
+//       user: {
+//         select: {
+//           name: true,
+//         },
+//       },
+//     },
+//   });
 
-  return res.json({ data: post });
-});
+//   return res.json({ data: post });
+// });
 
 //게시글 상세 조회 (단건)
 router.get("/post/:postId", async (req, res) => {
@@ -49,9 +50,10 @@ router.get("/post/:postId", async (req, res) => {
 });
 
 //게시글 생성 api
-router.post("/post", authMiddleware, async (req, res) => {
+router.post("/post", upload, authMiddleware, async (req, res) => {
   const user = req.user;
   const { title, content } = req.body;
+  const profileimage = req.file;
 
   if (!user) {
     return res.status(400).json({
@@ -76,9 +78,10 @@ router.post("/post", authMiddleware, async (req, res) => {
 
   await prisma.posts.create({
     data: {
-      title: title, // 사용자가 요청한 제목을 사용합니다.
-      content: content, // 사용자가 요청한 내용을 사용합니다.
-      userId: user.userId, // 인증된 사용자의 ID를 사용합니다.
+      title: title,
+      content: content,
+      userId: user.userId,
+      profileUrl: profileimage.path,
     },
   });
 
@@ -89,7 +92,7 @@ router.post("/post", authMiddleware, async (req, res) => {
 router.put("/post/:postId", authMiddleware, async (req, res) => {
   const user = req.user;
   const { postId } = req.params;
-  const { title, content } = req.body;
+  const { title, content, profileUrl } = req.body;
 
   // 유효성 검사
   if (!postId) {
@@ -126,17 +129,18 @@ router.put("/post/:postId", authMiddleware, async (req, res) => {
     });
   }
 
-  await prisma.posts.update({
+  const updatedPost = await prisma.posts.update({
     where: {
       postId: +postId,
     },
     data: {
       title,
       content,
+      profileUrl,
     },
   });
 
-  return res.status(201).json({ message: "게시글 수정이 성공하셨습니다." });
+  return res.status(201).json({ data: updatedPost });
 });
 
 //게시글 삭제 api
