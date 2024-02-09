@@ -5,33 +5,16 @@ import SignRouter from "./router/sign-up.router.js";
 import LikeRouter from "./router/like.router.js";
 import PostRouter from "./router/post.router.js";
 import OauthRouter from "./router/oauth.router.js";
-import swaggerJsDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
 import LogMiddleware from "./middlewares/log.middleware.js";
 import ErrorHandlingMiddleware from "./middlewares/error-handling.middleware.js";
 import UserRouter from "./router/users.router.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import newspeedRouter from "./router/newspeed.router.js";
+import FriendshipRouter from "./router/friendship.router.js";
 
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "My API",
-      version: "1.0.0",
-      description: "My API Information",
-    },
-    servers: [
-      {
-        url: "/api",
-      },
-    ],
-  },
-  apis: ["./routes/*.js"],
-};
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
 const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 3020;
 
 app.set("view engine", "ejs");
@@ -48,6 +31,8 @@ app.use("/", [
   UserRouter,
   SignRouter,
   OauthRouter,
+  newspeedRouter,
+  FriendshipRouter,
 ]);
 
 app.get("/sign-up", (req, res) => {
@@ -61,7 +46,11 @@ app.get("/sign-in", (req, res) => {
 app.get("/post", (req, res) => {
   res.render("post", { title: "게시판" });
 });
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+app.get("/chat", async (req, res) => {
+  res.render("chat", { messages: messages, username: username });
+});
+
 app.use(ErrorHandlingMiddleware);
 
 app.listen(PORT, () => {
