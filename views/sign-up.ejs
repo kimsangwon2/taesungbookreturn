@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>태성스북</title>
+    <link rel="stylesheet" type="text/css" href="/l_styles.css">
+</head>
+
+<div class="form-wrapper">
+    <h2>환영합니다</h2>
+    <form action="/sign-up" method="POST" enctype="multipart/form-data">
+        <div class="form-control">
+            <input type="text" id="name" name="name" required />
+            <label>이름</label>
+        </div>
+        <div class="form-control">
+            <input type="email" id="email" name="email" required />
+            <label>이메일 주소</label>
+        </div>
+        <div class="form-control">
+            <input type="password" id="password" name="password" required />
+            <label>비밀번호</label>
+        </div>
+        <div class="form-control">
+          <input type="password" id="Checkpass" name="Checkpass" required />
+          <label>비밀번호 확인</label>
+      </div>
+      <label>
+        프로필 이미지:
+        <input type="file" name="profileimage" />
+      </label>
+        <button>시작하기</button>    
+        <p>태성스북 회원이 아닌가요? 지금 시작하세요.</a></p>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>태성스북</title>
+    <link rel="stylesheet" type="text/css" href="../p_styles.css" />
+  </head>
+  <body>
+    <form action="/post" method="POST" enctype="multipart/form-data">
+      <h1>글쓰기</h1>
+      <label>
+        제목:
+        <input type="text" name="title" required />
+      </label>
+      <label>
+        내용:
+        <input type="text" name="content" required />
+      </label>
+      <label>
+        이미지 첨부:
+        <input type="file" name="profileimage" />
+      </label>
+      <button type="submit">작성하기</button>
+    </form>
+  </body>
+</html>
