@@ -78,11 +78,11 @@ model Friendship {
   user2Id Int  @map("user2Id")
   status String @default("nofriend") @map("status")
   createdAt    DateTime @default(now()) @map("createdAt")
-  updatedAt    DateTime @updatedAt @map("updatedAt")
   user1 Users @relation("Friendship1", fields: [user1Id], references: [userId])
   user2 Users @relation("Friendship2", fields: [user2Id], references: [userId])
   @@map("Friendship")
 }
+
 enum status {
   nofriend
   friend

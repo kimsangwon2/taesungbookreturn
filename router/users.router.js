@@ -7,7 +7,6 @@ import authMiddleware from "../middlewares/auth.middlewares.js";
 const router = express.Router();
 
 router.post("/sign-in", async (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
 
   // 입력값 검증
