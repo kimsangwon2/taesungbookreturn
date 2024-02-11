@@ -67,7 +67,7 @@ model Likes {
   postId    Int?
   commentId Int?
   createdAt    DateTime @default(now()) @map("createdAt")
-  user Users @relation(fields: [userId], references: [userId])
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
   post Posts? @relation(fields: [postId], references: [postId])
   comment Comments? @relation(fields: [commentId], references: [commentId])
   @@map("Likes")
@@ -78,8 +78,8 @@ model Friendship {
   user2Id Int  @map("user2Id")
   status String @default("nofriend") @map("status")
   createdAt    DateTime @default(now()) @map("createdAt")
-  user1 Users @relation("Friendship1", fields: [user1Id], references: [userId])
-  user2 Users @relation("Friendship2", fields: [user2Id], references: [userId])
+  user1 Users @relation("Friendship1", fields: [user1Id], references: [userId] ,onDelete: Cascade)
+  user2 Users @relation("Friendship2", fields: [user2Id], references: [userId] ,onDelete: Cascade)
   @@map("Friendship")
 }
 

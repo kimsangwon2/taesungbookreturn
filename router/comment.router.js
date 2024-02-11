@@ -25,27 +25,6 @@ router.post("/post/:postId/comment", authMiddleware, async (req, res, next) => {
   });
   return res.status(201).json({ data: comment });
 });
-//댓글 조회 API(단건)
-
-router.get("/post/:postId/comment/:commentId", async (req, res, next) => {
-  const { postId } = req.params;
-  const post = await prisma.posts.findFirst({
-    where: {
-      postId: +postId,
-    },
-  });
-  if (!post)
-    return res.status(404).json({ message: "게시글이 존재하지 않습니다." });
-  const comments = await prisma.comments.findFirst({
-    where: {
-      postId: +postId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  return res.status(200).json({ data: comments });
-});
 
 //댓글 조회API(여러건)
 
@@ -62,8 +41,16 @@ router.get("/post/:postId/comment", async (req, res, next) => {
     where: {
       postId: +postId,
     },
+    include: {
+      user: {
+        select: {
+          name: true,
+          profileUrl: true,
+        },
+      },
+    },
     orderBy: {
-      createdAt: "desc",
+      createdAt: "asc",
     },
   });
   return res.status(200).json({ data: comments });
@@ -78,18 +65,17 @@ router.put(
     const { content } = req.body;
     const { userId } = req.user;
     const { postId, commentId } = req.params;
-    const findcomment = await prisma.comments.findFirst({
-      where: { postId: +postId },
-    });
+
     if (!postId) {
       return res.status(404).json({ message: "게시글이 없습니다." });
     }
+
     const putcomment = await prisma.comments.update({
       where: { commentId: +commentId },
       data: {
         userId: +userId,
         postId: +postId,
-        content: content,
+        content,
       },
     });
     return res.status(200).json({ message: "댓글 수정에 성공하였습니다." });
@@ -103,11 +89,20 @@ router.delete(
   authMiddleware,
   async (req, res, next) => {
     const { postId, commentId } = req.params;
-    const findcomment = await prisma.comments.findFirst({
-      where: { postId: +postId },
-    });
+    const { userId } = req.user;
     if (!postId) {
       return res.status(404).json({ message: "게시글이 없습니다." });
+    }
+    const user = await prisma.comments.findFirst({
+      where: {
+        userId: +userId,
+      },
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "유저 정보가 유효하지 않습니다." });
     }
     const delcomment = await prisma.comments.delete({
       where: { commentId: +commentId },

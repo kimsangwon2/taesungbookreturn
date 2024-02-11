@@ -59,7 +59,6 @@ router.post("/ad/sign-up", async (req, res) => {
 router.post("/sign-up", upload, async (req, res, next) => {
   try {
     const { email, password, Checkpass, name, emailstatus } = req.body;
-    const profileimage = req.file;
 
     if (password.length < 6) {
       return res.status(409).json({
@@ -84,6 +83,7 @@ router.post("/sign-up", upload, async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const imageUrl = req.file.Location; // S3에 업로드된 이미지의 URL
 
     const [user] = await prisma.$transaction(
       async (tx) => {
@@ -96,7 +96,7 @@ router.post("/sign-up", upload, async (req, res, next) => {
             name,
             emailstatus: "nono", // 상태를 '가입대기중'으로 설정
             verificationToken: token.toString(), // token을 문자열로 변환하여 저장합니다.
-            profileUrl: profileimage.path, // 이미지 파일의 경로를 저장합니다.
+            profileUrl: imageUrl, // S3에 업로드된 이미지의 URL을 저장합니다.
           },
         });
 
@@ -117,7 +117,7 @@ router.post("/sign-up", upload, async (req, res, next) => {
   }
 });
 
-router.post("/sign-up/token", async (req, res, next) => {
+router.put("/sign-up/token", async (req, res, next) => {
   try {
     const { email, token } = req.body;
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Newspeed</title>
+  </head>
+  <body>
+    <h1>Newspeed</h1>
+    <% findfriend.forEach(function(post) { %>
+    <div class="post">
+      <h2><%= post.user.name %></h2>
+      <h3><%= post.title %></h3>
+      <img
+        src="<%= post.user.profileUrl ? post.user.profileUrl : '/path/to/default/image' %>"
+        alt="<%= post.user.name %>'s profile picture"
+      />
+      <img src="<%= post.profileUrl %>" />
+      <p><%= post.content %></p>
+      <% post.comments.forEach(function(comment) { %>
+      <div class="comment">
+        <h3><%= comment.user.name %></h3>
+        <img
+          src="<%= comment.user.profileUrl %>"
+          alt="<%= comment.user.name %>'s profile picture"
+        />
+        <p><%= comment.content %></p>
+      </div>
+      <% }) %>
+    </div>
+    <% }) %>
+  </body>
+</html>
