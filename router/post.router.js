@@ -5,20 +5,16 @@ import { upload } from "../middlewares/upload.js";
 
 const router = express.Router();
 
-//모든 게시글 조회 api (여러건)
-// router.get("/post", async (req, res) => {
-//   const post = await prisma.posts.findMany({
-//     include: {
-//       user: {
-//         select: {
-//           name: true,
-//         },
-//       },
-//     },
-//   });
-
-//   return res.json({ data: post });
-// });
+router.get("/post/list", async (req, res) => {
+  const post = await prisma.posts.findMany({
+    include: {
+      user: {
+        include: {},
+      },
+    },
+  });
+  return res.json({ data: post });
+});
 
 //게시글 상세 조회 (단건)
 router.get("/post/:postId", async (req, res) => {
@@ -39,6 +35,17 @@ router.get("/post/:postId", async (req, res) => {
           name: true,
         },
       },
+      likes: {
+        select: {
+          likesId: true,
+          userId: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -53,7 +60,6 @@ router.get("/post/:postId", async (req, res) => {
 router.post("/post", upload, authMiddleware, async (req, res) => {
   const user = req.user;
   const { title, content } = req.body;
-  const profileimage = req.file;
 
   if (!user) {
     return res.status(400).json({
@@ -75,13 +81,13 @@ router.post("/post", upload, authMiddleware, async (req, res) => {
       message: "게시글 내용은 필수값입니다.",
     });
   }
-
+  const imageUrl = req.file.Location;
   await prisma.posts.create({
     data: {
       title: title,
       content: content,
       userId: user.userId,
-      profileUrl: profileimage.path,
+      profileUrl: imageUrl,
     },
   });
 
@@ -102,27 +108,7 @@ router.put("/post/:postId", authMiddleware, async (req, res) => {
     });
   }
 
-  if (!title) {
-    return res.status(400).json({
-      success: false,
-      message: "이력서 제목은 필수값입니다.",
-    });
-  }
-
-  if (!content) {
-    return res.status(400).json({
-      success: false,
-      message: "이력서 내용은 필수값입니다.",
-    });
-  }
-
-  const posts = await prisma.posts.findFirst({
-    where: {
-      postId: +postId,
-    },
-  });
-
-  if (user !== user.userId) {
+  if (!user) {
     return res.status(400).json({
       success: false,
       message: "수정 권한이 없습니다",
@@ -148,7 +134,7 @@ router.delete("/post/:postId", authMiddleware, async (req, res) => {
   const user = req.user;
   const { postId } = req.params;
 
-  if (user !== user.userId) {
+  if (!user) {
     return res.status(400).json({
       success: false,
       message: "삭제 권한이 없습니다",

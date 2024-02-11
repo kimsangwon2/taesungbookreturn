@@ -42,7 +42,8 @@ const upload = async (req, res, next) => {
       });
 
       try {
-        await uploader.done();
+        const result = await uploader.done();
+        req.file.Location = result.Location; // S3에서 반환한 URL을 객체에 추가
         resolve(next());
       } catch (error) {
         reject(res.status(500).json({ message: error.message }));

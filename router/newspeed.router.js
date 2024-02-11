@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/auth.middlewares.js";
 
 const router = express.Router();
 
-router.get("/newsfeed", authMiddleware, async (req, res, next) => {
+router.get("/newspeed", authMiddleware, async (req, res, next) => {
   const user = req.user;
   const { user1Id } = req.params;
   const friendships = await prisma.friendship.findMany({
@@ -15,7 +15,7 @@ router.get("/newsfeed", authMiddleware, async (req, res, next) => {
   });
 
   const friendIds = friendships.map((friendship) =>
-    friendship.user2Id === user.userId ? friendship.user2Id : friendship.user1Id
+    friendship.user2Id === user.userId ? friendship.user1Id : friendship.user2Id
   );
 
   const findfriend = await prisma.posts.findMany({
@@ -23,15 +23,27 @@ router.get("/newsfeed", authMiddleware, async (req, res, next) => {
       userId: { in: friendIds },
     },
     include: {
+      user: {
+        select: {
+          name: true,
+          profileUrl: true,
+        },
+      },
       comments: {
         select: {
           commentId: true,
           content: true,
+          user: {
+            select: {
+              name: true,
+              profileUrl: true,
+            },
+          },
         },
       },
     },
   });
-  return res.status(200).json({ data: findfriend });
+  return res.render("newspeed", { findfriend });
 });
 
 export default router;

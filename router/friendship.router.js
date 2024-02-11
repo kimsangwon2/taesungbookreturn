@@ -17,14 +17,14 @@ router.post("/friendship", authMiddleware, async (req, res, next) => {
   console.log(user1);
 
   if (!user1)
-    return res.status(404).json({ message: "유저 정보1가 존재하지 않습니다." });
+    return res.status(404).json({ message: "유저가 존재하지 않습니다." });
 
   const user2 = await prisma.users.findUnique({
     where: { userId: user.userId },
   });
 
   if (!user2)
-    return res.status(404).json({ message: "유저 정보2가 존재하지 않습니다." });
+    return res.status(404).json({ message: "로그인이 유효하지 않습니다." });
 
   const friend = await prisma.friendship.create({
     data: {
@@ -46,11 +46,10 @@ router.put(
   async (req, res, next) => {
     const user = req.user;
     const { friendshipId } = req.params;
-    const { status } = req.body;
     const findfriend = await prisma.friendship.findFirst({
       where: {
         friendshipId: +friendshipId,
-        user2Id: user.userId,
+        user1Id: user.userId,
         status: "nofriend",
       },
     });
@@ -61,7 +60,7 @@ router.put(
     const friend = await prisma.friendship.update({
       where: { friendshipId: +friendshipId },
       data: {
-        status: status,
+        status: "friend",
       },
     });
     return res.status(201).json({ message: "친구를 수락하였습니다" });
@@ -70,12 +69,21 @@ router.put(
 
 //친구 정보
 //친구의 아이디(user1Id)와 이름(user.name)이 조회
-router.get("/friendship", authMiddleware, async (req, res, next) => {
+router.get("/friendship/my", authMiddleware, async (req, res, next) => {
   const user = req.user;
+
   const friend = await prisma.friendship.findMany({
     where: {
-      user2Id: user.userId,
-      status: "friend",
+      OR: [
+        {
+          user1Id: user.userId,
+          status: "friend",
+        },
+        {
+          user2Id: user.userId,
+          status: "friend",
+        },
+      ],
     },
     include: {
       user1: {
@@ -91,27 +99,32 @@ router.get("/friendship", authMiddleware, async (req, res, next) => {
 
 //친구 삭제
 //친구의 상태(status)를 친구였던것(nofriend)으로 보내면 친구 삭제
-router.put(
+router.delete(
   "/friendship/delete/:friendshipId",
   authMiddleware,
   async (req, res, next) => {
     const user = req.user;
     const { friendshipId } = req.params;
-    const { status } = req.body;
     const findfriend = await prisma.friendship.findFirst({
       where: {
-        friendshipId: +friendshipId,
-        status: "friend",
-        user2Id: user.userId,
+        OR: [
+          {
+            friendshipId: +friendshipId,
+            status: "friend",
+            user1Id: user.userId,
+          },
+          {
+            friendshipId: +friendshipId,
+            status: "friend",
+            user2Id: user.userId,
+          },
+        ],
       },
     });
     if (!findfriend)
       return res.status(404).json({ message: "친구가 존재하지 않습니다" });
-    const friend = await prisma.friendship.update({
+    const friend = await prisma.friendship.delete({
       where: { friendshipId: +friendshipId },
-      data: {
-        status: "nofriend",
-      },
     });
     return res.status(200).json({ message: "친구 삭제를 성공하였습니다" });
   }

@@ -40,7 +40,7 @@ router.post("/sign-in", async (req, res) => {
     process.env.REFRESH_SECRET,
     { expiresIn: "7d" }
   );
-
+  console.log(user);
   res.cookie("authorization", `Bearer ${userJWT}`);
   res.cookie("refreshToken", refreshToken);
   return res.status(200).json({ message: "로그인 성공" });
@@ -98,33 +98,12 @@ router.get("/users", authMiddleware, async (req, res, next) => {
 router.put("/users/:userId", authMiddleware, async (req, res) => {
   const user = req.user;
   const { userId } = req.params;
-  const { password, name, age } = req.body;
+  const { profileUrl } = req.body;
 
   if (!userId) {
     return res.status(400).json({
       success: false,
       message: "수정이 불가능한 유저입니다.",
-    });
-  }
-
-  if (!password) {
-    return res.status(400).json({
-      success: false,
-      message: "비밀번호 필수값입니다.",
-    });
-  }
-
-  if (!name) {
-    return res.status(400).json({
-      success: false,
-      message: "이름은 필수값입니다.",
-    });
-  }
-
-  if (!age) {
-    return res.status(400).json({
-      success: false,
-      message: "나이는 필수값입니다.",
     });
   }
 
@@ -153,13 +132,23 @@ router.put("/users/:userId", authMiddleware, async (req, res) => {
       userId: +userId,
     },
     data: {
-      password,
-      name,
-      age,
+      profileUrl,
     },
   });
 
   return res.status(201).json({ message: "프로필 수정이 완료되었습니다." });
+});
+
+router.delete("/users/deleate", authMiddleware, async (req, res) => {
+  const { userId } = req.user;
+
+  await prisma.users.delete({
+    where: {
+      userId: +userId,
+    },
+  });
+
+  return res.status(201).json({ message: "계정 삭제에 성공하셨습니다." });
 });
 
 export default router;

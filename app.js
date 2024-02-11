@@ -47,8 +47,8 @@ app.get("/post", (req, res) => {
   res.render("post", { title: "게시판" });
 });
 
-app.get("/chat", async (req, res) => {
-  res.render("chat", { messages: messages, username: username });
+app.get("/newspeed", (req, res) => {
+  res.render("newspeed", { title: "뉴스피드" });
 });
 
 app.use(ErrorHandlingMiddleware);

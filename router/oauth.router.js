@@ -2,7 +2,6 @@ import express from "express";
 import { prisma } from "../index.js";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import requestPromise from "request-promise-native";
 
 const router = express.Router();
 
