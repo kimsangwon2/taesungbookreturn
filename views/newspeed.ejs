@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <div class="post-form">
+    <div id="post-form-id" class="post-form">
       <form action="/post" method="POST" enctype="multipart/form-data">
         <h1>글 작성하기</h1>
         <label>
@@ -52,7 +52,7 @@
           />
         </label>
         <label>
-          이미지 첨부:
+          게시글 이미지 첨부:
           <input type="file" name="profileimage" />
         </label>
         <button type="submit">작성하기</button>
@@ -67,6 +67,15 @@
           alt="<%= post.user.name %>'s profile picture"
         />
         <h2 class="post-username"><%= post.user.name %></h2>
+
+        <form
+          class="delete-form"
+          action="/post/<%= post.postId %>"
+          method="POST"
+        >
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit">게시글 삭제</button>
+        </form>
       </div>
       <h3><%= post.title %></h3>
       <img class="post-image" src="<%= post.profileUrl %>" />

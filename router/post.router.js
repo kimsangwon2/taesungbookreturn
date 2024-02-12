@@ -135,7 +135,7 @@ router.put("/post/:postId", authMiddleware, async (req, res) => {
 });
 
 //게시글 삭제 api
-router.delete("/post/:postId", authMiddleware, async (req, res) => {
+router.post("/post/:postId", authMiddleware, async (req, res) => {
   const user = req.user;
   const { postId } = req.params;
 
@@ -151,7 +151,7 @@ router.delete("/post/:postId", authMiddleware, async (req, res) => {
     },
   });
 
-  return res.status(201).json({ message: "게시글 삭제에 성공하셨습니다." });
+  return res.status(201).json({ message: "댓글 삭제에 성공하였습니다." });
 });
 
 export default router;

@@ -23,7 +23,8 @@ body::before {
   background-position: center;
 }
 .sign-image {
-  width: 132px;
+  width: 50px;
+  margin: 30px 0 30px 0;
   height: 50px;
 }
 .form-wrapper {
