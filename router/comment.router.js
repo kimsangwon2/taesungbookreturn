@@ -23,7 +23,7 @@ router.post("/post/:postId/comment", authMiddleware, async (req, res, next) => {
       content: content,
     },
   });
-  return res.status(201).json({ data: comment });
+  return res.status(201).json({ message: "댓글 생성에 성공하였습니다." });
 });
 
 //댓글 조회API(여러건)
@@ -84,7 +84,7 @@ router.put(
 
 //댓글 삭제 API
 
-router.delete(
+router.post(
   "/post/:postId/comment/:commentId",
   authMiddleware,
   async (req, res, next) => {

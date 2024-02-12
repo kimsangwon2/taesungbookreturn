@@ -1,0 +1,147 @@
+.post {
+  width: 50%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.header img {
+  width: 70px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.post h2 {
+  font-size: 20px;
+  color: #333;
+}
+.post p {
+  font-size: 16px;
+  color: #666;
+}
+.post-form {
+  width: 50%;
+  margin: 20px auto;
+  padding: 20px;
+}
+.post-form {
+  width: 50%;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+.post-form label {
+  font-weight: bold;
+  color: #444;
+}
+.post-form input[type="text"],
+.post-form textarea {
+  width: 97%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+.post-form input[type="file"] {
+  margin: 10px 0;
+}
+.post-form input[type="submit"] {
+  background-color: #4267b2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.post-header {
+  display: flex;
+  align-items: center;
+}
+.post-image {
+  width: 600px;
+  height: auto;
+}
+.sign-image {
+  width: 150px;
+  height: 50px;
+}
+.post-profile-pic {
+  width: 70px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.post-username {
+  font-size: 20px;
+  color: #333;
+}
+
+.post-form input[type="submit"]:hover {
+  background-color: #365899;
+}
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
+  background-color: #4267b2;
+  color: white;
+}
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 930px;
+  padding: 0 20px;
+}
+.logo {
+  max-height: 100px;
+}
+.user-section {
+  display: flex;
+  align-items: center;
+}
+.header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.header button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: white;
+  color: #4267b2;
+  cursor: pointer;
+}
+body {
+  background: url("main1.jpg");
+  background-size: cover;
+}
+
+.header button:hover {
+  background-color: #365899;
+  color: white;
+}
+.comment-header {
+  display: flex;
+  align-items: center;
+}
+.comment img {
+  width: 4em;
+  height: 3em;
+  margin-right: 10px;
+}
+.comment {
+  display: flex;
+  justify-content: space-between;
+}
+
+.delete-form {
+  margin-left: auto;
+}

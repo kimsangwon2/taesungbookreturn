@@ -8,9 +8,7 @@ const router = express.Router();
 router.post("/post/:postId/like", authMiddleware, async (req, res, next) => {
   const { userId } = req.user;
   const { postId } = req.params;
-  const post = await prisma.posts.findFirst({
-    where: { postId: +postId },
-  });
+  const post = await prisma.posts.findFirst({ where: { postId: +postId } });
   if (!post)
     return res.status(404).json({ message: "게시글이 존재하지 않습니다." });
   const user = await prisma.users.findFirst({

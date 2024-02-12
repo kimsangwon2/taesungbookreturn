@@ -9,19 +9,16 @@ const router = express.Router();
 router.post("/sign-in", async (req, res) => {
   const { email, password } = req.body;
 
-  // 입력값 검증
   if (!email || !password) {
     return res.status(400).json({ message: "이메일과 비밀번호를 입력하세요." });
   }
 
   const user = await prisma.users.findFirst({ where: { email } });
 
-  // 사용자 검증
   if (!user) {
     return res.status(401).json({ message: "존재하지 않는 이메일입니다." });
   }
 
-  // 비밀번호 검증
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
     return res.status(401).json({ message: "비밀번호가 일치하지 않습니다." });
@@ -43,13 +40,13 @@ router.post("/sign-in", async (req, res) => {
   console.log(user);
   res.cookie("authorization", `Bearer ${userJWT}`);
   res.cookie("refreshToken", refreshToken);
-  return res.status(200).json({ message: "로그인 성공" });
+  return res.redirect("newspeed");
 });
 
-router.get("/sign-out", (req, res) => {
+router.get("/logout", (req, res) => {
   res.clearCookie("authorization");
   res.clearCookie("refreshtoken");
-  return res.status(200).json({ message: "로그아웃 성공" });
+  res.redirect("sign-in");
 });
 
 router.post("/refresh", async (req, res, next) => {
