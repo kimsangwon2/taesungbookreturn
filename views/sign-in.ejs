@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Neaflix</title>
+    <title>게임스북</title>
     <link rel="stylesheet" type="text/css" href="../l_styles.css" />
   </head>
 
@@ -19,15 +19,34 @@
           <input type="password" id="password" name="password" required />
           <label for="password">비밀번호</label>
         </div>
-        <button type="submit" id="loginButton">로그인</button>
-        <div class="form-help">
-          <div class="remember-me">
-            <input type="checkbox" id="remember-me" name="remember-me" />
-            <label for="remember-me">로그인 정보 저장</label>
+        <form class="sign-form">
+          <button type="submit" id="loginButton">로그인</button>
+          <a href="/oauth">
+            <img
+              class="sign-image"
+              src="../kakao-login.png"
+              alt="카카오 로그인"
+            />
+          </a>
+          <a href="/oauth/naver">
+            <img
+              class="sign-image"
+              src="../naver-login.png"
+              alt="네이버 로그인"
+            />
+          </a>
+          <a href="/oauth/google">
+            <img
+              class="sign-image"
+              src="../google-login.png"
+              alt="구글 로그인"
+            />
+          </a>
+
+          <div class="sign-text">
+            <p>회원이 아니신가요? <a href="/sign-up">지금 가입하세요.</a></p>
           </div>
-          <a href="/help">도움이 필요하신가요?</a>
-        </div>
-        <p>회원이 아니신가요? <a href="/signup">지금 가입하세요.</a></p>
+        </form>
       </form>
     </div>
   </body>

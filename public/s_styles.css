@@ -22,7 +22,10 @@ body::before {
   background: url("main.jpg");
   background-position: center;
 }
-
+.sign-image {
+  width: 150px;
+  height: 50px;
+}
 .form-wrapper {
   position: absolute;
   left: 50%;

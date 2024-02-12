@@ -51,6 +51,10 @@ app.get("/newspeed", (req, res) => {
   res.render("newspeed", { title: "뉴스피드" });
 });
 
+app.get("/mypage", (req, res) => {
+  res.render("mypage", { title: "상세 페이지" });
+});
+
 app.use(ErrorHandlingMiddleware);
 
 app.listen(PORT, () => {

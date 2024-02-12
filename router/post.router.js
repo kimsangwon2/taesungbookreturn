@@ -81,7 +81,12 @@ router.post("/post", upload, authMiddleware, async (req, res) => {
       message: "게시글 내용은 필수값입니다.",
     });
   }
-  const imageUrl = req.file.Location;
+
+  let imageUrl = null;
+  if (req.file) {
+    imageUrl = req.file.Location;
+  }
+
   await prisma.posts.create({
     data: {
       title: title,
@@ -91,7 +96,7 @@ router.post("/post", upload, authMiddleware, async (req, res) => {
     },
   });
 
-  return res.status(201).json({ message: "게시글 등록이 완료되었습니다." });
+  return res.redirect(req.headers.referer || "/");
 });
 
 //게시글 수정 api
@@ -136,7 +141,6 @@ router.delete("/post/:postId", authMiddleware, async (req, res) => {
 
   if (!user) {
     return res.status(400).json({
-      success: false,
       message: "삭제 권한이 없습니다",
     });
   }

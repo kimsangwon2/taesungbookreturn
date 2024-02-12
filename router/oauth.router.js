@@ -60,7 +60,7 @@ router.get("/oauth/callback", async (req, res) => {
 
   res.cookie("authorization", `Bearer ${userJWT}`);
 
-  return res.status(200).json({ message: "로그인 성공" });
+  return res.redirect("/newspeed");
 });
 
 router.get("/oauth/logout", async (req, res) => {
@@ -125,8 +125,7 @@ router.get("/oauth/google/callback", async (req, res) => {
   );
   res.cookie("authorization", `Bearer ${userJWT}`);
 
-  req.session.userId = user.userId;
-  return res.status(200).json({ message: "로그인 성공" });
+  return res.redirect("/newspeed");
 });
 
 router.get("/oauth/google/logout", (req, res) => {
@@ -140,10 +139,7 @@ router.get("/oauth/logout/callback", (req, res) => {
 
 router.get("/oauth/naver", (req, res) => {
   const api_url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.NAVER_CLIENT_ID}&redirect_uri=${process.env.NAVER_REDIRECT_URI}&state=hLiDdL2uhPtsftcU`;
-  res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-  res.end(
-    `<a href="${api_url}"><img height='50' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/></a>`
-  );
+  res.redirect(api_url);
 });
 
 router.get("/oauth/naver/callback", async (req, res) => {
@@ -201,7 +197,7 @@ router.get("/oauth/naver/callback", async (req, res) => {
   );
   res.cookie("authorization", `Bearer ${userJWT}`);
 
-  return res.status(200).json({ message: "로그인 성공" });
+  return res.redirect("/newspeed");
 });
 
 export default router;
