@@ -69,3 +69,30 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch((error) => console.error("Error fetching friend list:", error));
 });
+
+const putpost = document.getElementById("putpost");
+function postedit(postId, title, content) {
+  document.getElementById("edit-post-form").action = `/post/${postId}`;
+  document.getElementById("edit-title").value = title;
+  document.getElementById("edit-content").value = content;
+  putpost.style.display = "flex";
+}
+
+function postputcom() {
+  putpost.style.display = "none";
+  window.location.href = "/mypage";
+}
+
+const putcomment = document.getElementById("putcomment");
+function commentedit(postId, commentId, content) {
+  document.getElementById(
+    "edit-comment-form"
+  ).action = `/post/${postId}/comment/${commentId}`;
+  document.getElementById("edit-content").value = content;
+  putcomment.style.display = "flex";
+}
+
+function commentputcom() {
+  putcomment.style.display = "none";
+  window.location.reload();
+}
