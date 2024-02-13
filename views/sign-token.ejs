@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임스북</title>
+    <link rel="stylesheet" type="text/css" href="/lstyles.css">
+</head>
+
+<div class="form-wrapper">
+    <h2>환영합니다</h2>
+    <form action="/sign-token" method="POST" enctype="multipart/form-data">
+        <div class="form-control">
+            <input type="email" id="email" name="email" required />
+            <label>이메일 주소</label>
+        </div>
+        <div class="form-control">
+            <input type="int" id="verificationToken" name="verificationToken" required />
+            <label>이메일 인증번호</label>
+        </div>
+      <button id="startButton">시작하기</button>    
+      <p>태성스북 회원이 아닌가요?<br><strong style="font-size: 1.05em;">지금 시작하세요.</strong></a></p>
+    </form>
+</body>
+
+</html>

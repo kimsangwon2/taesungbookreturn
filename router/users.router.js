@@ -148,4 +148,39 @@ router.delete("/users/deleate", authMiddleware, async (req, res) => {
   return res.status(201).json({ message: "계정 삭제에 성공하셨습니다." });
 });
 
+router.get("/users/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  const users = await prisma.users.findFirst({
+    where: {
+      userId: +userId,
+    },
+    select: {
+      name: true,
+      profileUrl: true,
+      posts: {
+        select: {
+          user: true,
+          title: true,
+          content: true,
+          comments: true,
+          likes: {
+            select: {
+              likesId: true,
+              userId: true,
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return res.render("users", { user: users, posts: users.posts });
+});
+
 export default router;

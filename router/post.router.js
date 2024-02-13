@@ -16,50 +16,10 @@ router.get("/post/list", async (req, res) => {
   return res.json({ data: post });
 });
 
-//게시글 상세 조회 (단건)
-router.get("/post/:postId", async (req, res) => {
-  const postId = req.params.postId;
-  if (!postId) {
-    return res.status(400).json({
-      success: false,
-      message: "포스트아이디값은 필수값입니다.",
-    });
-  }
-  const posts = await prisma.posts.findFirst({
-    where: {
-      postId: +postId,
-    },
-    include: {
-      user: {
-        select: {
-          name: true,
-        },
-      },
-      likes: {
-        select: {
-          likesId: true,
-          userId: true,
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (!posts) {
-    return res.status(404).json({ message: "게시글이 없습니다." });
-  }
-
-  return res.json({ data: posts });
-});
-
 //게시글 생성 api
 router.post("/post", upload, authMiddleware, async (req, res) => {
   const user = req.user;
-  const { title, content } = req.body;
+  const { title, content, like } = req.body;
 
   if (!user) {
     return res.status(400).json({
@@ -93,6 +53,7 @@ router.post("/post", upload, authMiddleware, async (req, res) => {
       content: content,
       userId: user.userId,
       profileUrl: imageUrl,
+      like: like,
     },
   });
 

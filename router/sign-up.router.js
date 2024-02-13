@@ -108,16 +108,14 @@ router.post("/sign-up", upload, async (req, res, next) => {
       }
     );
     const token = Math.floor(Math.random() * 900000) + 100000; // 6자리 숫자 난수 생성
-    return res.status(201).json({
-      message: "회원가입이 완료되었습니다. 이메일 인증 메일을 확인해주세요.",
-    });
+    return res.redirect("/sign-token");
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "회원가입에 실패했습니다." });
   }
 });
 
-router.put("/sign-up/token", async (req, res, next) => {
+router.post("/sign-token", async (req, res, next) => {
   try {
     const { email, token } = req.body;
 
@@ -129,13 +127,7 @@ router.put("/sign-up/token", async (req, res, next) => {
       return res.status(404).json({ message: "유저를 찾을 수 없습니다." });
     }
 
-    if (user.emailstatus !== "nono") {
-      return res
-        .status(409)
-        .json({ message: "이미 이메일 인증이 완료된 유저입니다." });
-    }
-
-    if (user.verificationToken !== token) {
+    if (!user.verificationToken) {
       return res
         .status(400)
         .json({ message: "인증 코드가 일치하지 않습니다." });
@@ -146,7 +138,7 @@ router.put("/sign-up/token", async (req, res, next) => {
       data: { emailstatus: "yes" },
     });
 
-    res.status(200).json({ message: "회원가입이 완료되었습니다." });
+    return res.redirect("/sign-in");
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "서버 에러" });

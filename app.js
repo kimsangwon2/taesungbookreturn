@@ -43,8 +43,12 @@ app.get("/sign-in", (req, res) => {
   res.render("sign-in", { title: "로그인" });
 });
 
-app.get("/post", (req, res) => {
-  res.render("post", { title: "게시판" });
+app.get("/sign-token", (req, res) => {
+  res.render("sign-token", { title: "가입 확인" });
+});
+
+app.get("/users/:userId", (req, res) => {
+  res.render("users", { title: "게시판" });
 });
 
 app.get("/newspeed", (req, res) => {
