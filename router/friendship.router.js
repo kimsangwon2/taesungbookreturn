@@ -72,7 +72,7 @@ router.put(
 router.get("/friendship/my", authMiddleware, async (req, res, next) => {
   const user = req.user;
 
-  const friend = await prisma.friendship.findMany({
+  const friends = await prisma.friendship.findMany({
     where: {
       OR: [
         {
@@ -90,13 +90,32 @@ router.get("/friendship/my", authMiddleware, async (req, res, next) => {
         select: {
           userId: true,
           name: true,
+          profileUrl: true,
+        },
+      },
+      user2: {
+        select: {
+          userId: true,
+          name: true,
+          profileUrl: true,
         },
       },
     },
   });
-  return res.status(200).json({ friend });
-});
+  const friendData = friends.map((friendship) => {
+    const friend =
+      friendship.user2.userId === user.userId
+        ? friendship.user1
+        : friendship.user2;
+    return {
+      userId: friend.userId,
+      name: friend.name,
+      profileUrl: friend.profileUrl,
+    };
+  });
 
+  return res.status(200).json({ friend: friendData });
+});
 //친구 삭제
 //친구의 상태(status)를 친구였던것(nofriend)으로 보내면 친구 삭제
 router.delete(
@@ -129,5 +148,7 @@ router.delete(
     return res.status(200).json({ message: "친구 삭제를 성공하였습니다" });
   }
 );
+
+router.get("/friendship");
 
 export default router;

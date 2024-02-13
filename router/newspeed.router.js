@@ -30,6 +30,11 @@ router.get("/newspeed", authMiddleware, async (req, res, next) => {
           profileUrl: true,
         },
       },
+      likes: {
+        select: {
+          likesId: true,
+        },
+      },
       comments: {
         select: {
           commentId: true,
@@ -38,6 +43,11 @@ router.get("/newspeed", authMiddleware, async (req, res, next) => {
             select: {
               name: true,
               profileUrl: true,
+              likes: {
+                select: {
+                  likesId: true,
+                },
+              },
             },
           },
         },

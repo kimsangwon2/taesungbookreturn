@@ -27,13 +27,24 @@
           <input type="password" id="Checkpass" name="Checkpass" required />
           <label>비밀번호 확인</label>
       </div>
-      <label>
+      <div class="label_style">
         프로필 이미지:
-        <input type="file" name="profileimage" />
-      </label>
-        <button>시작하기</button>    
-        <p>게임스북 회원이 아닌가요? 지금 시작하세요.</a></p>
+        <input
+            type="file"
+            id="image"
+            accept="image/*"
+            name="profileimage"
+            onchange="setThumbnail(event);"
+        />
+        <div id="image_container"></div>
+        <button type="button" id="deleteButton" style="display: none">
+            이미지 삭제
+        </button>
+    </div>
+      <button id="startButton" href="/sign-token"  >시작하기</button>    
+      <p>태성스북 회원이 아닌가요?<br><strong style="font-size: 1.05em;">지금 시작하세요.</strong></a></p>
     </form>
+    <script src="../sign-up.js"></script>
 </body>
 
 </html>
