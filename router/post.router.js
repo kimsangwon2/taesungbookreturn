@@ -61,7 +61,7 @@ router.post("/post", upload, authMiddleware, async (req, res) => {
 });
 
 //게시글 수정 api
-router.put("/post/:postId", authMiddleware, async (req, res) => {
+router.post("/post/:postId", authMiddleware, async (req, res) => {
   const user = req.user;
   const { postId } = req.params;
   const { title, content, profileUrl } = req.body;
@@ -92,11 +92,11 @@ router.put("/post/:postId", authMiddleware, async (req, res) => {
     },
   });
 
-  return res.status(201).json({ data: updatedPost });
+  return res.redirect(req.headers.referer || "/");
 });
 
 //게시글 삭제 api
-router.post("/post/:postId", authMiddleware, async (req, res) => {
+router.delete("/post/:postId", authMiddleware, async (req, res) => {
   const user = req.user;
   const { postId } = req.params;
 

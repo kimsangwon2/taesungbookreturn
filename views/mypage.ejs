@@ -72,13 +72,54 @@
           alt="<%= post.user.name %>'s profile picture"
         />
         <h2 class="post-username"><%= post.user.name %></h2>
-        <form
-          class="delete-form"
-          action="/post/<%= post.postId %>"
-          method="POST"
-        >
-          <input type="hidden" name="_method" value="DELETE" />
-          <button type="submit">게시글 삭제</button>
+        <div id="putpost" class="putpost">
+          <div class="putpost-content">
+            <form
+              id="edit-post-form"
+              action=""
+              method="POST"
+              onsubmit="postputcom()"
+            >
+              <label>
+                새로운 제목:
+                <input
+                  type="text"
+                  id="edit-title"
+                  name="title"
+                  placeholder="새로운 제목을 입력해주세요"
+                  required
+                />
+              </label>
+              <label>
+                새로운 내용:
+                <input
+                  type="text"
+                  id="edit-content"
+                  name="content"
+                  placeholder="새로운 내용을 입력해주세요"
+                  required
+                />
+              </label>
+              <button type="submit" onclick="postputcom()">수정하기</button>
+            </form>
+          </div>
+        </div>
+        <form class="put-form" action="/post/<%= post.postId %>" method="POST">
+          <input type="hidden" name="_method" value="PUT" />
+          <button
+            type="button"
+            onclick="postedit('<%= post.postId %>', '<%= post.title %>', '<%= post.content %>')"
+          >
+            게시글 수정
+          </button>
+          <form
+            class="delete-form"
+            action="/post/<%= post.postId %>"
+            method="POST"
+          >
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit">게시글 삭제</button>
+          </form>
         </form>
       </div>
       <h3><%= post.title %></h3>
@@ -99,13 +140,48 @@
         <p><%= comment.content %></p>
 
         <form
-          class="delete-form"
+          class="putcomment-form"
           action="/post/<%= post.postId %>/comment/<%= comment.commentId %>"
           method="POST"
         >
-          <input type="hidden" name="_method" value="DELETE" />
-          <button type="submit">댓글 삭제</button>
+          <input type="hidden" name="_method" value="put" />
+          <button
+            type="button"
+            onclick="commentedit('<%= post.postId %>', '<%= comment.commentId %>', '<%= comment.content %>')"
+          >
+            댓글 수정
+          </button>
+          <form
+            class="delete-form"
+            action="/post/<%= post.postId %>/comment/<%= comment.commentId %>"
+            method="POST"
+          >
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit">댓글 삭제</button>
+          </form>
         </form>
+        <div id="putcomment" class="putcomment">
+          <div class="putcomment-content">
+            <form
+              id="edit-comment-form"
+              action=""
+              method="POST"
+              onsubmit="commentputcom()"
+            >
+              <label>
+                새로운 내용:
+                <input
+                  type="text"
+                  id="edit-content"
+                  name="content"
+                  placeholder="새로운 내용을 입력해주세요"
+                  required
+                />
+              </label>
+              <button type="submit" onclick="commentputcom()">수정하기</button>
+            </form>
+          </div>
+        </div>
       </div>
       <button
         class="comment-like-button"

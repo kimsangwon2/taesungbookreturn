@@ -146,3 +146,19 @@ body {
 .delete-form {
   margin-left: auto;
 }
+.put-form {
+  margin-left: auto;
+}
+.putpost-content {
+  margin-left: auto;
+}
+
+.putpost {
+  display: none;
+}
+.putcomment-form {
+  margin-left: auto;
+}
+.putcomment {
+  display: none;
+}

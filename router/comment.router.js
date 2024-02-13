@@ -58,7 +58,7 @@ router.get("/post/:postId/comment", async (req, res, next) => {
 
 //댓글 수정 API
 
-router.put(
+router.post(
   "/post/:postId/comment/:commentId",
   authMiddleware,
   async (req, res, next) => {
@@ -78,13 +78,13 @@ router.put(
         content,
       },
     });
-    return res.status(200).json({ message: "댓글 수정에 성공하였습니다." });
+    return res.redirect(req.headers.referer || "/");
   }
 );
 
 //댓글 삭제 API
 
-router.post(
+router.delete(
   "/post/:postId/comment/:commentId",
   authMiddleware,
   async (req, res, next) => {
