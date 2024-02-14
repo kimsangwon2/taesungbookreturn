@@ -72,14 +72,6 @@
           alt="<%= post.user.name %>'s profile picture"
         />
         <h2 class="post-username"><%= post.user.name %></h2>
-        <form
-          class="delete-form"
-          action="/post/<%= post.postId %>"
-          method="POST"
-        >
-          <input type="hidden" name="_method" value="DELETE" />
-          <button type="submit">게시글 삭제</button>
-        </form>
       </div>
       <h3><%= post.title %></h3>
       <img class="post-image" src="<%= post.profileUrl %>" />
@@ -97,15 +89,6 @@
           <h3><%= comment.user.name %></h3>
         </div>
         <p><%= comment.content %></p>
-
-        <form
-          class="delete-form"
-          action="/post/<%= post.postId %>/comment/<%= comment.commentId %>"
-          method="POST"
-        >
-          <input type="hidden" name="_method" value="DELETE" />
-          <button type="submit">댓글 삭제</button>
-        </form>
       </div>
       <button
         class="comment-like-button"

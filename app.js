@@ -12,6 +12,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import newspeedRouter from "./router/newspeed.router.js";
 import FriendshipRouter from "./router/friendship.router.js";
+import methodOverride from "method-override";
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,10 +21,12 @@ const PORT = 3020;
 app.set("view engine", "ejs");
 app.use(LogMiddleware);
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 app.use(cookieParser());
+app.use(methodOverride("_method"));
 app.use("/", [
   CommentRouter,
   LikeRouter,

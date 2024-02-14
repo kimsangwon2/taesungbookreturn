@@ -100,6 +100,7 @@
                   required
                 />
               </label>
+              <input type="hidden" name="_method" value="PUT" />
               <button type="submit" onclick="postputcom()">수정하기</button>
             </form>
           </div>
@@ -112,14 +113,14 @@
           >
             게시글 수정
           </button>
-          <form
-            class="delete-form"
-            action="/post/<%= post.postId %>"
-            method="POST"
-          >
-            <input type="hidden" name="_method" value="DELETE" />
-            <button type="submit">게시글 삭제</button>
-          </form>
+        </form>
+        <form
+          class="delete-form"
+          action="/post/<%= post.postId %>?_method=DELETE"
+          method="POST"
+        >
+          <input type="hidden" name="_method" value="delete" />
+          <button type="submit">게시글 삭제</button>
         </form>
       </div>
       <h3><%= post.title %></h3>
@@ -151,14 +152,14 @@
           >
             댓글 수정
           </button>
-          <form
-            class="delete-form"
-            action="/post/<%= post.postId %>/comment/<%= comment.commentId %>"
-            method="POST"
-          >
-            <input type="hidden" name="_method" value="DELETE" />
-            <button type="submit">댓글 삭제</button>
-          </form>
+        </form>
+        <form
+          class="delete-form"
+          action="/post/<%= post.postId %>/comment/<%= comment.commentId %>"
+          ?_method="POST"
+        >
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit">댓글 삭제</button>
         </form>
         <div id="putcomment" class="putcomment">
           <div class="putcomment-content">

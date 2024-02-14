@@ -47,6 +47,7 @@
         <p><%= post.content %></p>
         <% post.comments.forEach(function(comment) { %>
         <div class="comment">
+          <% if(comment.user) { %>
           <div class="comment-header">
             <img
               src="<%= comment.user.profileUrl %>"
@@ -55,6 +56,7 @@
             <h3><%= comment.user.name %></h3>
           </div>
           <p><%= comment.content %></p>
+          <% } else { %> <% } %>
         </div>
         <% }) %>
 

@@ -52,7 +52,7 @@ router.get("/oauth/callback", async (req, res) => {
 
   const userJWT = jwt.sign(
     {
-      userId: user.userId,
+      userId: users.userId,
     },
     process.env.JWT_SECRET,
     { expiresIn: "12h" }

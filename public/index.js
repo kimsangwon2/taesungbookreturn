@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       fetch(this.action, {
-        method: "POST",
+        method: "DELETE",
         body: new URLSearchParams(new FormData(this)),
       })
         .then((response) => response.json())
