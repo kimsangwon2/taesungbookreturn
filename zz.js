@@ -5,11 +5,11 @@ import authMiddleware from "../middlewares/auth.middlewares.js";
 const router = express.Router();
 
 router.get("/newspeed", authMiddleware, async (req, res, next) => {
-  const user = req.user;
-
+  const { user, userId } = req.user;
+  const { user1Id } = req.params;
   const friendships = await prisma.friendship.findMany({
     where: {
-      OR: [{ user1Id: user.userId }, { user2Id: user.userId }],
+      OR: [{ user1Id: user1Id }, { user2Id: user.userId }],
       status: "friend",
     },
   });
@@ -18,7 +18,7 @@ router.get("/newspeed", authMiddleware, async (req, res, next) => {
     friendship.user2Id === user.userId ? friendship.user1Id : friendship.user2Id
   );
 
-  const posts = await prisma.posts.findMany({
+  const findfriend = await prisma.posts.findMany({
     where: {
       userId: { in: friendIds },
     },
@@ -29,11 +29,6 @@ router.get("/newspeed", authMiddleware, async (req, res, next) => {
           profileUrl: true,
         },
       },
-      likes: {
-        select: {
-          likesId: true,
-        },
-      },
       comments: {
         select: {
           commentId: true,
@@ -42,11 +37,6 @@ router.get("/newspeed", authMiddleware, async (req, res, next) => {
             select: {
               name: true,
               profileUrl: true,
-              likes: {
-                select: {
-                  likesId: true,
-                },
-              },
             },
           },
         },
@@ -54,13 +44,32 @@ router.get("/newspeed", authMiddleware, async (req, res, next) => {
     },
   });
 
-  return res.render("newspeed", { posts, user });
+  const nofriend = await prisma.friendship.findMany({
+    where: [
+      {
+        OR: [{ user1Id: user1Id }, { user2Id: user.userId }],
+      },
+      {
+        NOT: {
+          status: "friend",
+        },
+      },
+    ],
+    select: {
+      user1Id: true,
+      user2Id: true,
+    },
+  });
+  const nofriendIds = nofriendships.map((friendship) =>
+    friendship.user2Id === user.userId ? friendship.user1Id : friendship.user2Id
+  );
+
+  return res.render("newspeed", { nofriendIds });
 });
 
-router.get("/mypage", authMiddleware, async (req, res, next) => {
-  const user = req.user;
+router.get("/newspeed/my", authMiddleware, async (req, res, next) => {
   const { userId } = req.user;
-  const posts = await prisma.posts.findMany({
+  const post = await prisma.posts.findMany({
     where: { userId: +userId },
     include: {
       user: {
@@ -69,22 +78,9 @@ router.get("/mypage", authMiddleware, async (req, res, next) => {
           profileUrl: true,
         },
       },
-      comments: {
-        select: {
-          commentId: true,
-          content: true,
-          user: {
-            select: {
-              name: true,
-              profileUrl: true,
-            },
-          },
-        },
-      },
     },
   });
-
-  return res.render("mypage", { posts, user });
+  return res.json({ data: post });
 });
 
 export default router;
